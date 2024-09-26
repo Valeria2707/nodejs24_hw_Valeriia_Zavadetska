@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LoggerMiddleware } from './logger/logger.middleware';
+import { LogIpMiddleware } from './middlewares/log-ip/logIp.middleware';
 
 @Module({
   imports: [],
@@ -10,6 +10,6 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(LogIpMiddleware).forRoutes('*');
   }
 }
