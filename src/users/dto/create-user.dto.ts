@@ -9,4 +9,8 @@ export class CreateUserDto {
   age: number;
   @IsBoolean()
   isStudent: boolean;
+  @IsString()
+  password: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
