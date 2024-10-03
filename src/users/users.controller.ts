@@ -15,7 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePartialUserDto } from './dto/update-partial-user.dto';
 import { IUser } from './interfaces/user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from 'src/guards/access-token.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 
 @Controller('users')
 export class UsersController {

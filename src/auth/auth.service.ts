@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { SignUpUserDto } from './dto/sign-up-user.dto';
 import { ISignUpUserResponse } from './interface/sign-up-user-response.interface';
 import { SignInUserDto } from './dto/sign-in-user.dto';

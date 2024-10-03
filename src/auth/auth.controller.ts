@@ -2,9 +2,9 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpUserDto } from './dto/sign-up-user.dto';
 import { SignInUserDto } from './dto/sign-in-user.dto';
-import { AccessTokenGuard } from 'src/guards/access-token.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 import { Request } from 'express';
-import { RefreshTokenGuard } from 'src/guards/refresh-token.guard';
+import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 
 @Controller('auth')
 export class AuthController {
