@@ -8,12 +8,14 @@ import {
   Delete,
   ParseIntPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePartialUserDto } from './dto/update-partial-user.dto';
 import { IUser } from './interfaces/user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 
 @Controller('users')
 export class UsersController {
@@ -29,6 +31,7 @@ export class UsersController {
     return this.usersService.create(dto);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Patch(':id')
   updateUserPartially(
     @Param('id', ParseIntPipe) id: number,
@@ -37,6 +40,7 @@ export class UsersController {
     return this.usersService.updatePartially(id, updateUserDto);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Put(':id')
   updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -45,6 +49,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Delete(':id')
   deleteUser(@Param('id', ParseIntPipe) id: number): string {
     return this.usersService.remove(id);

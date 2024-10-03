@@ -17,6 +17,7 @@ export class UsersService {
       lastName: 'Clay',
       age: 28,
       isStudent: true,
+      password: 'Qwerty',
     },
     {
       id: 2,
@@ -24,6 +25,7 @@ export class UsersService {
       lastName: 'Fuller',
       age: 36,
       isStudent: false,
+      password: 'HelloWorld',
     },
   ];
   create(createUserDto: CreateUserDto) {
@@ -81,5 +83,22 @@ export class UsersService {
     this.users = this.users.filter((user) => user.id !== id);
 
     return `User with ID ${id} removed successfully`;
+  }
+
+  findOneWithoutExeption(firstName: string): IUser {
+    return this.users.find((user) => user.firstName === firstName);
+  }
+
+  findOneByName(firstName: string) {
+    const user = this.users.find((user) => user.firstName === firstName);
+    if (!user) {
+      throw new NotFoundException(`User with firstName ${firstName} not found`);
+    }
+    return user;
+  }
+
+  findOneAndUpdate(id: number, updateBody: UpdatePartialUserDto): IUser {
+    const user = this.findOne(id);
+    return this.updatePartially(user.id, updateBody);
   }
 }

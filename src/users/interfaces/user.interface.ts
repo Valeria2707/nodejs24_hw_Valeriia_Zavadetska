@@ -4,4 +4,7 @@ export interface IUser {
   lastName: string;
   age: number;
   isStudent: boolean;
+  password: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
