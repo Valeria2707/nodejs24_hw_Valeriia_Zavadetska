@@ -5,26 +5,16 @@ import { LogIpMiddleware } from './middlewares/log-ip/logIp.middleware';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseAbstractionModule } from './database-abstraction/database-abstraction.module';
+import { DBType } from './database-abstraction/types/enums/database-type.enum';
 
 @Module({
   imports: [
     UsersModule,
+
     AuthModule,
     ConfigModule.forRoot(),
-    MongooseModule.forRootAsync({
-      useFactory: () => {
-        return {
-          connectionFactory: (connection) => {
-            if (connection.readyState === 1) {
-              console.log('Database Connected successfully');
-            }
-            return connection;
-          },
-          uri: process.env.MONGO_URL,
-        };
-      },
-    }),
+    DatabaseAbstractionModule.register(DBType.MONGODB),
   ],
 
   controllers: [AppController],
