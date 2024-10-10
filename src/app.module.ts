@@ -14,7 +14,7 @@ import { DBType } from './database-abstraction/types/enums/database-type.enum';
 
     AuthModule,
     ConfigModule.forRoot(),
-    DatabaseAbstractionModule.register(DBType.MONGODB),
+    DatabaseAbstractionModule.register(DBType.POSTGRES),
   ],
 
   controllers: [AppController],
