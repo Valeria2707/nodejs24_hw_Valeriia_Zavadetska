@@ -6,7 +6,7 @@ import { MongooseModelsMapEnum } from '../types/enums/mngodb-model-map.enum';
 import { UserModel } from '../models/user.model';
 
 @Injectable()
-export class MongoDatabaseService extends AbstractDatabaseService {
+export class MongoDatabaseService<T> extends AbstractDatabaseService<T> {
   private readonly logger = new Logger(MongoDatabaseService.name);
 
   private client: Mongoose;

@@ -4,10 +4,10 @@ import { IAbstractDatabaseService } from '../types/database-abstraction-service.
 import { MongoDatabaseService } from './mongodb.service';
 import { PostgresDatabaseService } from './postgresdb.service';
 
-export const createDatabaseService = (
+export const createDatabaseService = <T>(
   dbType: DBType,
   configService: ConfigService,
-): IAbstractDatabaseService => {
+): IAbstractDatabaseService<T> => {
   switch (dbType) {
     case DBType.MONGODB:
       return new MongoDatabaseService(configService);

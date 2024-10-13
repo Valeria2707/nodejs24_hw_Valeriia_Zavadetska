@@ -8,7 +8,7 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
-export class PostgresDatabaseService extends AbstractDatabaseService {
+export class PostgresDatabaseService<T> extends AbstractDatabaseService<T> {
   private dataSource: DataSource;
   private readonly logger = new Logger(PostgresDatabaseService.name);
 

@@ -6,7 +6,7 @@ import { IAbstractDatabaseService } from './types/database-abstraction-service.i
 
 @Module({})
 export class DatabaseAbstractionModule {
-  static register(dbType: DBType): DynamicModule {
+  static register<T>(dbType: DBType): DynamicModule {
     return {
       module: DatabaseAbstractionModule,
       imports: [ConfigModule],
@@ -19,7 +19,7 @@ export class DatabaseAbstractionModule {
         },
         {
           provide: 'DATABASE_CONNECTION',
-          useFactory: async (dbService: IAbstractDatabaseService) => {
+          useFactory: async (dbService: IAbstractDatabaseService<T>) => {
             await dbService.connect();
             return dbService;
           },

@@ -11,7 +11,6 @@ import { DBType } from './database-abstraction/types/enums/database-type.enum';
 @Module({
   imports: [
     UsersModule,
-
     AuthModule,
     ConfigModule.forRoot(),
     DatabaseAbstractionModule.register(DBType.POSTGRES),
