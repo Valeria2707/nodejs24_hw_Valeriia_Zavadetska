@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -21,10 +22,11 @@ import { MongooseModule } from '@nestjs/mongoose';
             }
             return connection;
           },
-          uri: process.env.MONGO_URL,
+          uri: process.env.MONGO_URI,
         };
       },
     }),
+    FileModule,
   ],
 
   controllers: [AppController],
