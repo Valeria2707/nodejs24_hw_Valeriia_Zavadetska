@@ -8,13 +8,18 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { FileService } from './file.service';
+import { MAX_FILE_SIZE } from './constants/file.constants';
 
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: MAX_FILE_SIZE },
+    }),
+  )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
