@@ -3,10 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdatePartialUserDto } from './dto/update-partial-user.dto';
 import { IUser } from './interfaces/user.interface';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdatePartialUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +14,6 @@ export class UsersService {
       firstName: 'Cal',
       lastName: 'Clay',
       age: 28,
-      isStudent: true,
       password: 'Qwerty',
     },
     {
@@ -24,7 +21,6 @@ export class UsersService {
       firstName: 'Lee',
       lastName: 'Fuller',
       age: 36,
-      isStudent: false,
       password: 'HelloWorld',
     },
   ];

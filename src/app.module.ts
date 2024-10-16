@@ -6,6 +6,11 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RestaurantsModule } from './restaurants/restaurants.module';
+import { MenusModule } from './menus/menus.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -21,10 +26,15 @@ import { MongooseModule } from '@nestjs/mongoose';
             }
             return connection;
           },
-          uri: process.env.MONGO_URL,
+          uri: process.env.MONGO_URI,
         };
       },
     }),
+    RestaurantsModule,
+    MenusModule,
+    ReservationsModule,
+    FavoritesModule,
+    ReviewsModule,
   ],
 
   controllers: [AppController],
