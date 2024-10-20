@@ -7,6 +7,12 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseAbstractionModule } from './database-abstraction/database-abstraction.module';
 import { DBType } from './database-abstraction/types/enums/database-type.enum';
+import { MongooseModule } from '@nestjs/mongoose';
+import { RestaurantsModule } from './restaurants/restaurants.module';
+import { MenusModule } from './menus/menus.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -14,6 +20,24 @@ import { DBType } from './database-abstraction/types/enums/database-type.enum';
     AuthModule,
     ConfigModule.forRoot(),
     DatabaseAbstractionModule.register(DBType.POSTGRES),
+    MongooseModule.forRootAsync({
+      useFactory: () => {
+        return {
+          connectionFactory: (connection) => {
+            if (connection.readyState === 1) {
+              console.log('Database Connected successfully');
+            }
+            return connection;
+          },
+          uri: process.env.MONGO_URI,
+        };
+      },
+    }),
+    RestaurantsModule,
+    MenusModule,
+    ReservationsModule,
+    FavoritesModule,
+    ReviewsModule,
   ],
 
   controllers: [AppController],
