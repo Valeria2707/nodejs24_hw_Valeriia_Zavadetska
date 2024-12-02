@@ -6,13 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   Put,
-  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { IUser } from './interfaces/user.interface';
-import { AccessTokenGuard } from '../guards/access-token.guard';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -36,70 +34,74 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get user by id.' })
   @ApiCreatedResponse({
-    description: 'Created Succesfully',
+    description: 'User retrieved successfully',
     type: ResponseGetUserDto,
     isArray: false,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number): IUser {
-    return this.usersService.findOne(id);
+  async getUser(@Param('id') id: string): Promise<IUser> {
+    return await this.usersService.findOne(id);
+  }
+
+  @Get()
+  async getUsers(
+    @Query() filterDto: { search?: string; [key: string]: any },
+  ): Promise<IUser[]> {
+    return this.usersService.findAll(filterDto);
   }
 
   @ApiOperation({ summary: 'Create user.' })
   @ApiCreatedResponse({
-    description: 'Created Succesfully',
+    description: 'User created successfully',
     type: ResponseCreateUserDto,
     isArray: false,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @Post()
-  createUser(@Body() dto: CreateUserDto): IUser {
-    return this.usersService.create(dto);
+  async createUser(@Body() dto: CreateUserDto): Promise<IUser> {
+    return await this.usersService.create(dto);
   }
 
   @ApiOperation({ summary: 'Update partially user.' })
   @ApiCreatedResponse({
-    description: 'Created Succesfully',
+    description: 'User updated successfully',
     type: ResponseUpdateUserDto,
     isArray: false,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @UseGuards(AccessTokenGuard)
   @Patch(':id')
-  updateUserPartially(
-    @Param('id', ParseIntPipe) id: number,
+  async updateUserPartially(
+    @Param('id') id: string,
     @Body() updateUserDto: UpdatePartialUserDto,
-  ): IUser {
-    return this.usersService.updatePartially(id, updateUserDto);
+  ): Promise<IUser> {
+    return await this.usersService.updatePartially(id, updateUserDto);
   }
 
   @ApiOperation({ summary: 'Update user.' })
   @ApiCreatedResponse({
-    description: 'Created Succesfully',
+    description: 'User updated successfully',
     type: ResponseUpdateUserDto,
     isArray: false,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @UseGuards(AccessTokenGuard)
   @Put(':id')
-  updateUser(
-    @Param('id', ParseIntPipe) id: number,
+  async updateUser(
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): IUser {
-    return this.usersService.update(id, updateUserDto);
+  ): Promise<IUser> {
+    return await this.usersService.update(id, updateUserDto);
   }
 
   @ApiOperation({ summary: 'Remove user.' })
   @ApiCreatedResponse({
-    description: 'Created Succesfully',
+    description: 'User removed successfully',
     type: ResponseRemoveUserDto,
     isArray: false,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @UseGuards(AccessTokenGuard)
   @Delete(':id')
-  deleteUser(@Param('id', ParseIntPipe) id: number): string {
-    return this.usersService.remove(id);
+  async deleteUser(@Param('id') id: string): Promise<string> {
+    return await this.usersService.remove(id);
   }
 }

@@ -8,10 +8,6 @@ export class ResponseGetReservationDto {
 
   @ApiProperty()
   @IsNumber()
-  restaurantId: number;
-
-  @ApiProperty()
-  @IsNumber()
   userId: number;
 
   @ApiProperty()

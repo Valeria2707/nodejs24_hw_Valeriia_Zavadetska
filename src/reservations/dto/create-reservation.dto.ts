@@ -1,37 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsNotEmpty, IsIn } from 'class-validator';
+import { IsNotEmpty, IsIn, IsDateString, IsString } from 'class-validator';
 
 export class CreateReservationDto {
   @ApiProperty({
-    type: Number,
-    description: 'This is a required property',
-    example: 1,
+    type: String,
+    description: 'User ID associated with the reservation',
+    example: '1',
   })
-  @IsNumber()
-  restaurantId: number;
-
-  @ApiProperty({
-    type: Number,
-    description: 'This is a required property',
-    example: 1,
-  })
-  @IsNumber()
-  userId: number;
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 
   @ApiProperty({
     type: String,
-    description: 'This is a required property',
-    example: '2024-10-20 18:00',
+    description: 'Reservation time in ISO 8601 format',
+    example: '2024-10-20T18:00:00Z',
   })
-  @IsString()
+  @IsDateString()
   @IsNotEmpty()
   reservationTime: string;
 
   @ApiProperty({
-    type: ['reserved', 'canceled', 'visited'],
-    description: 'This is a required property',
+    enum: ['reserved', 'canceled', 'visited'],
+    description: 'Status of the reservation',
     example: 'reserved',
   })
   @IsIn(['reserved', 'canceled', 'visited'])
+  @IsNotEmpty()
   status: 'reserved' | 'canceled' | 'visited';
 }

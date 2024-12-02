@@ -27,7 +27,7 @@ export class ReservationsController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @Get(':userId')
   findAllForUser(@Param('userId') userId: string) {
-    return this.reservationsService.findAllForUser(Number(userId));
+    return this.reservationsService.findAllForUser(userId);
   }
 
   @ApiOperation({ summary: 'Create reservation' })
@@ -51,6 +51,21 @@ export class ReservationsController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @Patch(':id/cancel')
   cancel(@Param('id') id: string) {
-    return this.reservationsService.cancelReservation(Number(id));
+    return this.reservationsService.cancelReservation(id);
+  }
+
+  @ApiOperation({ summary: 'Get all reservations.' })
+  @ApiCreatedResponse({
+    description: 'All reservations retrieved successfully',
+    type: ResponseGetReservationDto,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @Get()
+  findAll() {
+    console.log('Request to fetch all reservations');
+    const result = this.reservationsService.findAll();
+    console.log('Response from service (findAll):', result);
+    return result;
   }
 }

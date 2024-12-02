@@ -1,9 +1,9 @@
+import { Reservation } from 'src/reservations/interfaces/reservation.interface';
+
 export interface IUser {
-  id: number;
+  _id?: string;
   firstName: string;
   lastName: string;
   age: number;
-  password: string;
-  accessToken?: string;
-  refreshToken?: string;
+  reservations?: Reservation[];
 }

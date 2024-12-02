@@ -2,99 +2,114 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { IUser } from './interfaces/user.interface';
 import { CreateUserDto, UpdatePartialUserDto, UpdateUserDto } from './dto';
+import { IAbstractDatabaseService } from 'src/database-abstraction/types/database-abstraction-service.interface';
+import { v4 as uuidv4 } from 'uuid';
+import { PostgresEntityMapEnum } from 'src/database-abstraction/types/enums/postgres-entity-map.enum';
 
 @Injectable()
 export class UsersService {
-  private users: IUser[] = [
-    {
-      id: 1,
-      firstName: 'Cal',
-      lastName: 'Clay',
-      age: 28,
-      password: 'Qwerty',
-    },
-    {
-      id: 2,
-      firstName: 'Lee',
-      lastName: 'Fuller',
-      age: 36,
-      password: 'HelloWorld',
-    },
-  ];
-  create(createUserDto: CreateUserDto) {
-    const newUser = { id: this.users.length + 1, ...createUserDto };
-    this.users.push(newUser);
-    return newUser;
+  constructor(
+    @Inject('DATABASE_CONNECTION')
+    private readonly databaseService: IAbstractDatabaseService<IUser>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<IUser> {
+    const userId = uuidv4();
+    const newUser = { _id: userId, ...createUserDto };
+
+    await this.databaseService.insertOne(PostgresEntityMapEnum.USER, newUser);
+    return newUser as IUser;
   }
 
-  findOne(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  async findOne(id: string): Promise<IUser> {
+    const user = await this.databaseService.findOne(
+      PostgresEntityMapEnum.USER,
+      {
+        _id: id,
+      },
+    );
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    return user;
+    return user as IUser;
   }
 
-  updatePartially(id: number, updateUserDto: UpdatePartialUserDto) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
+  async findAll(filterDto?: {
+    search?: string;
+    [key: string]: any;
+  }): Promise<IUser[]> {
+    const { search, ...filter } = filterDto || {};
+    return this.databaseService.findAll(
+      PostgresEntityMapEnum.USER,
+      filter,
+      search,
+    );
+  }
 
+  async updatePartially(
+    id: string,
+    updateUserDto: UpdatePartialUserDto,
+  ): Promise<IUser> {
     if (updateUserDto.hasOwnProperty('id')) {
       throw new BadRequestException('Updating the "id" field is not allowed');
     }
 
-    const updatedUser = { ...this.users[userIndex], ...updateUserDto };
-    this.users[userIndex] = updatedUser;
+    const updatedUser = await this.databaseService.updateOne(
+      PostgresEntityMapEnum.USER,
+      { _id: id },
+      updateUserDto,
+    );
 
-    return updatedUser;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+    if (!updatedUser) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
+    return updatedUser as IUser;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<IUser> {
     if (updateUserDto.hasOwnProperty('id')) {
       throw new BadRequestException('Updating the "id" field is not allowed');
     }
 
-    const updatedUser = { id, ...updateUserDto };
-    this.users[userIndex] = updatedUser;
-    return updatedUser;
-  }
+    const updatedUser = await this.databaseService.updateOne(
+      PostgresEntityMapEnum.USER,
+      { _id: id },
+      updateUserDto,
+    );
 
-  remove(id: number) {
-    const user = this.users.find((user) => user.id === id);
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+    if (!updatedUser) {
+      throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    this.users = this.users.filter((user) => user.id !== id);
-
-    return `User with ID ${id} removed successfully`;
+    return updatedUser as IUser;
   }
 
-  findOneWithoutExeption(firstName: string): IUser {
-    return this.users.find((user) => user.firstName === firstName);
-  }
-
-  findOneByName(firstName: string) {
-    const user = this.users.find((user) => user.firstName === firstName);
+  async remove(id: string): Promise<string> {
+    const user = await this.databaseService.findOne(
+      PostgresEntityMapEnum.USER,
+      {
+        _id: id,
+      },
+    );
     if (!user) {
-      throw new NotFoundException(`User with firstName ${firstName} not found`);
+      throw new NotFoundException(`User with id ${id} not found`);
     }
-    return user;
+
+    await this.databaseService.deleteOne(PostgresEntityMapEnum.USER, {
+      _id: id,
+    });
+    return `User with id ${id} removed successfully`;
   }
 
-  findOneAndUpdate(id: number, updateBody: UpdatePartialUserDto): IUser {
-    const user = this.findOne(id);
-    return this.updatePartially(user.id, updateBody);
+  async findOneAndUpdate(
+    id: string,
+    updateBody: UpdatePartialUserDto,
+  ): Promise<IUser> {
+    return this.updatePartially(id, updateBody);
   }
 }
