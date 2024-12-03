@@ -1,7 +1,16 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto {
+  @ApiProperty({
+    type: String,
+    description: 'MongoDB document ID',
+    example: '64c9bfea8e4c3f4d12345678',
+  })
+  @IsOptional()
+  @IsString()
+  _id?: string;
+
   @ApiProperty({
     type: String,
     description: 'This is a required property',
@@ -25,28 +34,4 @@ export class CreateUserDto {
   })
   @IsInt()
   age: number;
-
-  @ApiProperty({
-    type: String,
-    description: 'This is a required property',
-    example: 'StrongPassword123',
-  })
-  @IsString()
-  password: string;
-
-  @ApiPropertyOptional({
-    type: String,
-    description: 'This is a optional property',
-    example: 'eyJhbGciOiJIUzI1NiIsInR...',
-  })
-  @IsOptional()
-  accessToken?: string;
-
-  @ApiPropertyOptional({
-    type: String,
-    description: 'This is a optional property',
-    example: 'eyJhbGciOiJIUzI1NiIsInR...',
-  })
-  @IsOptional()
-  refreshToken?: string;
 }

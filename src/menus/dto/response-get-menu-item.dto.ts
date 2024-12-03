@@ -3,8 +3,8 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class ResponseGetMenuItemDto {
   @ApiProperty()
-  @IsNumber()
-  id: number;
+  @IsString()
+  _id: string;
 
   @ApiProperty()
   @IsNumber()

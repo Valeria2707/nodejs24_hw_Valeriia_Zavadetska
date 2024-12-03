@@ -20,6 +20,7 @@ export class DatabaseAbstractionModule {
         {
           provide: 'DATABASE_CONNECTION',
           useFactory: async (dbService: IAbstractDatabaseService<T>) => {
+            console.log('Database connection type:', dbType);
             await dbService.connect();
             return dbService;
           },
