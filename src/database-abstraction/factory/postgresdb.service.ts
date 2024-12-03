@@ -5,6 +5,7 @@ import { AbstractDatabaseService } from '../database-abstraction.service';
 import { PostgresEntityMapEnum } from '../types/enums/postgres-entity-map.enum';
 import { UserEntity } from '../entities/user.entity';
 import { ReservationEntity } from '../entities/reservation.entity';
+import { MenuEntity } from '../entities/menu.entity';
 
 @Injectable()
 export class PostgresDatabaseService<T> extends AbstractDatabaseService<T> {
@@ -21,7 +22,7 @@ export class PostgresDatabaseService<T> extends AbstractDatabaseService<T> {
       username: configService.get<string>('POSTGRES_USER'),
       password: configService.get<string>('POSTGRES_PASSWORD'),
       database: configService.get<string>('POSTGRES_DB'),
-      entities: [UserEntity, ReservationEntity],
+      entities: [UserEntity, ReservationEntity, MenuEntity],
       synchronize: true,
       logging: true,
     });
@@ -105,6 +106,8 @@ export class PostgresDatabaseService<T> extends AbstractDatabaseService<T> {
         return this.dataSource.getRepository(UserEntity);
       case PostgresEntityMapEnum.RESERVATION:
         return this.dataSource.getRepository(ReservationEntity);
+      case PostgresEntityMapEnum.MENU:
+        return this.dataSource.getRepository(MenuEntity);
       default:
         throw new Error(`Repository for table ${table} not found`);
     }

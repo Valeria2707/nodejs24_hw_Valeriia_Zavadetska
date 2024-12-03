@@ -16,7 +16,7 @@ import { ReviewsModule } from './reviews/reviews.module';
   imports: [
     UsersModule,
     ConfigModule.forRoot(),
-    DatabaseAbstractionModule.register(DBType.POSTGRES),
+    DatabaseAbstractionModule.register(DBType.MONGODB),
     RestaurantsModule,
     MenusModule,
     ReservationsModule,

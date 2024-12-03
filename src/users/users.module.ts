@@ -7,7 +7,7 @@ import { ReservationsModule } from 'src/reservations/reservations.module';
 
 @Module({
   imports: [
-    DatabaseAbstractionModule.register(DBType.POSTGRES),
+    DatabaseAbstractionModule.register(DBType.MONGODB),
     forwardRef(() => ReservationsModule),
   ],
   controllers: [UsersController],

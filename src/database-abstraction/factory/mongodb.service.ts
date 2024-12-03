@@ -5,6 +5,7 @@ import { AbstractDatabaseService } from '../database-abstraction.service';
 import { MongooseModelsMapEnum } from '../types/enums/mngodb-model-map.enum';
 import { UserModel } from '../models/user.model';
 import { ReservationModel } from '../models/reservation.model';
+import { MenuModel } from '../models/menu.model';
 
 @Injectable()
 export class MongoDatabaseService<T> extends AbstractDatabaseService<T> {
@@ -56,6 +57,8 @@ export class MongoDatabaseService<T> extends AbstractDatabaseService<T> {
     if (search) {
       const regex = new RegExp(search, 'i');
       query.$or = [
+        { name: { $regex: regex } },
+        { description: { $regex: regex } },
         { firstName: { $regex: regex } },
         { lastName: { $regex: regex } },
       ];
@@ -87,6 +90,8 @@ export class MongoDatabaseService<T> extends AbstractDatabaseService<T> {
         return UserModel;
       case MongooseModelsMapEnum.RESERVATION:
         return ReservationModel;
+      case MongooseModelsMapEnum.MENU:
+        return MenuModel;
       default:
         throw new Error(`Model for table ${table} not found`);
     }

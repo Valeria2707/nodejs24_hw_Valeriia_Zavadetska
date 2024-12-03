@@ -5,6 +5,13 @@ import {
   createReservation,
   cancelReservation,
 } from './api/reservations';
+import {
+  getMenus,
+  createMenu,
+  updateMenu,
+  deleteMenu,
+  IMenu,
+} from './api/menus';
 import './App.css';
 
 interface IUser {
@@ -24,10 +31,10 @@ interface IReservation {
 
 const App: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
-  const [filterText, setFilterText] = useState<string>('');
   const [reservations, setReservations] = useState<
     Record<string, IReservation[]>
   >({});
+  const [menus, setMenus] = useState<IMenu[]>([]);
   const [user, setUser] = useState<IUser>({
     firstName: '',
     lastName: '',
@@ -39,7 +46,15 @@ const App: React.FC = () => {
     status: 'reserved',
     userId: '',
   });
+  const [menu, setMenu] = useState<IMenu>({
+    name: '',
+    description: '',
+    price: 0,
+  });
+  const [filterUserText, setFilterUserText] = useState<string>('');
+  const [filterMenuText, setFilterMenuText] = useState<string>('');
   const [editUserId, setEditUserId] = useState<string | null>(null);
+  const [editMenuId, setEditMenuId] = useState<string | null>(null);
 
   const fetchUsers = async (search?: string) => {
     const data = await getUsers(search);
@@ -55,8 +70,15 @@ const App: React.FC = () => {
     setReservations(allReservations);
   };
 
+  const fetchMenus = async (search?: string) => {
+    const data = await getMenus(search);
+    console.log(data);
+    setMenus(data);
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchMenus();
   }, []);
 
   useEffect(() => {
@@ -66,8 +88,9 @@ const App: React.FC = () => {
   }, [users]);
 
   useEffect(() => {
-    fetchUsers(filterText);
-  }, [filterText]);
+    fetchUsers(filterUserText);
+    fetchMenus(filterMenuText);
+  }, [filterUserText, filterMenuText]);
 
   const handleUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,19 +146,39 @@ const App: React.FC = () => {
     fetchAllReservations();
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterText(e.target.value);
+  const handleMenuSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (editMenuId) {
+      await updateMenu(editMenuId, menu);
+      setEditMenuId(null);
+    } else {
+      await createMenu(menu);
+    }
+
+    setMenu({ name: '', description: '', price: 0 });
+    fetchMenus();
+  };
+
+  const handleEditMenu = (menu: IMenu) => {
+    setEditMenuId(menu._id || null);
+    setMenu(menu);
+  };
+
+  const handleDeleteMenu = async (menuId: string) => {
+    await deleteMenu(menuId);
+    setMenus(menus.filter((m) => m._id !== menuId));
   };
 
   return (
     <div className="app-container">
-      <h1>User and Reservation Management</h1>
+      <h1>User, Reservation, and Menu Management</h1>
 
       <input
         type="text"
         placeholder="Filter by name or surname"
-        value={filterText}
-        onChange={handleFilterChange}
+        value={filterUserText}
+        onChange={(e) => setFilterUserText(e.target.value)}
         className="search-input"
       />
 
@@ -239,6 +282,65 @@ const App: React.FC = () => {
         </ul>
       ) : (
         <h3 className="no-users">🚫 No users found</h3>
+      )}
+      <hr />
+      <br />
+      <h2>Menus</h2>
+      <input
+        type="text"
+        placeholder="Filter by name or surname"
+        value={filterMenuText}
+        onChange={(e) => setFilterMenuText(e.target.value)}
+        className="search-input"
+      />
+
+      <form onSubmit={handleMenuSubmit} className="menu-form">
+        <input
+          type="text"
+          placeholder="Name"
+          value={menu.name}
+          onChange={(e) =>
+            setMenu((prev) => ({ ...prev, name: e.target.value }))
+          }
+          required
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={menu.description}
+          onChange={(e) =>
+            setMenu((prev) => ({ ...prev, description: e.target.value }))
+          }
+          required
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={menu.price !== undefined ? menu.price : ''}
+          onChange={(e) =>
+            setMenu((prev) => ({ ...prev, price: Number(e.target.value) }))
+          }
+          required
+        />
+        <button type="submit">{editMenuId ? 'Update Menu' : 'Add Menu'}</button>
+      </form>
+
+      {menus.length > 0 ? (
+        <ul className="menu-list">
+          {menus.map((menu) => (
+            <li key={menu._id} className="menu-item">
+              <h3>{menu.name}</h3>
+              <p>Description: {menu.description}</p>
+              <p>Price: ${menu.price}</p>
+              <button onClick={() => handleEditMenu(menu)}>Edit</button>
+              <button onClick={() => handleDeleteMenu(menu._id || '')}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <h3 className="no-menus">🚫 No menu items found</h3>
       )}
     </div>
   );
